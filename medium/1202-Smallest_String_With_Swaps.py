@@ -10,54 +10,42 @@ import typing as t
 from collections import defaultdict
 
 
+class UnionFind:
+    def __init__(self, n):
+        self.paths = list(range(n))
+
+    def union(self, x, y):
+        self.paths[self.find(x)] = self.find(y)
+
+    def find(self, x):
+        if x != self.paths[x]:
+            self.paths[x] = self.find(self.paths[x])
+        return self.paths[x]
+
+
 class Solution:
-    def smallestStringWithSwaps(self, s: str, pairs: t.List[t.List[int]]) -> str:
+    def smallestStringWithSwaps(self, s: str, pairs: List[List[int]]) -> str:
         if len(pairs) == 0:
             return s
 
-        for pair in pairs:
-            pair.sort()
-        pairs.sort(key=lambda x:x[0])
+        result = []
+        m = defaultdict(list)
 
-        paths = defaultdict(set)
-        for pair in pairs:
-            v1, v2 = min(pair), max(pair)
-            if v2 in paths:
-                paths[v2].add(v1)
-            else:
-                paths[v1].add(v1)
-                paths[v1].add(v2)
+        uf = UnionFind(len(s))
+        for x, y in pairs:
+            uf.union(x, y)
+            print(uf.paths)
 
-        p = []
-        while len(paths) > 0:
-            has_union = False
-            pkeys = list(paths.keys())
-            k1 = pkeys[0]
-            v1 = paths[k1]
-            for k2 in pkeys[1:]:
-                v2 = paths[k2]
-                if len(v1 & v2) > 0:
-                    has_union = True
-                    v1 = v1 | v2
-                    paths.pop(k2)
-            paths.pop(k1)
-            if has_union:
-                paths[k1] = v1
-            else:
-                v1 = sorted(v1)
-                p.append(v1)
+        for i in range(len(s)):
+            m[uf.find(i)].append(s[i])
 
-        strings = [None] * len(s)
-        for path in p:
-            string = [s[i] for i in path]
-            string.sort()
-            for i, j in enumerate(path):
-                strings[j] = string[i]
+        for key in m.keys():
+            m[key].sort(reverse=True)
 
-        for i, char in enumerate(strings):
-            if char is None:
-                strings[i] = s[i]
-        return ''.join(i for i in strings)
+        for i in range(len(s)):
+            result.append(m[uf.find(i)].pop())
+
+        return ''.join(result)
 
 
 if __name__ == '__main__':
