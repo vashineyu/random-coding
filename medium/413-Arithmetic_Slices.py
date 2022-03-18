@@ -19,7 +19,7 @@ class Solution:
           if nums[i] - nums[i - 1] == nums[i - 1] - nums[i - 2]:
               result[i] = result[i - 1] + 1
       return sum(result)
- 
+
 
 if __name__ == '__main__':
   testcases = [
