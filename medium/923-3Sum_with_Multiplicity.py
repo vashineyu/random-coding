@@ -43,6 +43,7 @@ class Solution:
 
     @staticmethod
     def combinations(n, m):
+        # C(n, m)
         return factorial(n) // (factorial(n - m) * factorial(m))
 
 
