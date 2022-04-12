@@ -29,17 +29,11 @@ class Solution:
         board_copy = np.array(board)
         nrows, ncols = board_copy.shape
 
-        result = []
         for row in range(nrows):
             for col in range(ncols):
                 outcome = self.cell_is_live_or_death(board_copy, row, col)
-                result.append(outcome)
+                board[row][col] = int(outcome)
 
-        counter = 0
-        for row in range(nrows):
-            for col in range(ncols):
-                board[row][col] = int(result[counter])
-                counter += 1
         return board
 
     def cell_is_live_or_death(self, board, row, col):
